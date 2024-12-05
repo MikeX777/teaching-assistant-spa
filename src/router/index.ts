@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue';
 import CreateAccountView from '../views/CreateAccountView.vue';
 import LoginView from '../views/LoginView.vue';
+import VerifyEmailView from '@/views/VerifyEmailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,11 @@ const router = createRouter({
       name: 'Login',
       component: LoginView,
     },
+    {
+      path: '/verify-email/:email',
+      name: 'Verify Email',
+      component: VerifyEmailView
+    }
   ],
 })
 

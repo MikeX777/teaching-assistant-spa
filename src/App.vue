@@ -9,7 +9,7 @@ import { ApplicationRepository } from './repositories/ApplicationRepository';
 
 import Menubar from 'primevue/menubar';
 
-provide<IUserRepository>('userRepostory', new UserRepository('https://apitaassistant-app-2024102921080.nicecliff-6fd000a2.eastus2.azurecontainerapps.io/v1/'));
+provide<IUserRepository>('userRepository', new UserRepository('https://apitaassistant-app-2024102921080.nicecliff-6fd000a2.eastus2.azurecontainerapps.io/v1/'));
 provide<IApplicationRepository>('applicationRepository', new ApplicationRepository('https://apitaassistant-app-2024102921080.nicecliff-6fd000a2.eastus2.azurecontainerapps.io/v1/'));
 
 const items = ref([
@@ -21,15 +21,15 @@ const items = ref([
   {
     label: 'Features',
     icon: 'pi pi-star',
-    route: 'about',
+    route: '/about',
   },
   {
     label: 'Create Account',
-    route: 'create-account',
+    route: '/create-account',
   },
   {
     label: 'Login',
-    route: 'login',
+    route: '/login',
   }
 ])
 
@@ -55,7 +55,9 @@ const items = ref([
   </template>
   </Menubar>
   <div class="col-8 col-offset-2">
-    <RouterView />
+    <Suspense>
+      <RouterView />
+    </Suspense>
   </div>
 </template>
 
