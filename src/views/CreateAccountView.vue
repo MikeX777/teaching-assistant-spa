@@ -11,6 +11,7 @@ import { InputText } from 'primevue';
 import { Button } from 'primevue';
 import { Password } from 'primevue';
 import { Select } from 'primevue';
+import { FileUpload } from 'primevue';
 import type { IUserRepository } from '@/interfaces/IUserRepository';
 import type { UserTypeDto } from '@/models/responses/UserTypeDto';
 import { CreateUserRequest } from '@/models/requests/CreateUserRequest';
@@ -22,6 +23,7 @@ const userRepository = inject<IUserRepository>('userRepository');
 const userTypes = ref((await userRepository?.getUserTypes())?.data.data ?? [] as UserTypeDto[]);
 const router = useRouter();
 
+const fileupload = ref(null);
 const form = reactive({
     givenName: '',
     familyName: '',
@@ -81,15 +83,24 @@ const onFormSubmit = async () => {
         request.email = form.email;
         request.password = form.password;
         request.userTypeId = form.userType.userTypeId;
-        await userRepository?.createUser(request);
-        router.push(`/login`);
+        await userRepository?.createUser(request).then(async r => {
+            userRepository.uploadCv(r.data.data.userId, fileupload.value).then(() => {
+                router.push(`/login`);
+            }).catch(e => {
+                console.log(e);
+            });
+        });
     }
 };
+
+function onFileSelect(event: any) {
+    fileupload.value = event.files[0];
+}
 
 </script>
 
 <template>
-    <Panel class="flex flex-col justify-center col-3 col-offset-4">
+    <Panel class="flex flex-col justify-center col-5 col-offset-4">
         <div class="flex flex-col pt-3">
             <h2>Create User</h2>
         </div>
@@ -132,6 +143,9 @@ const onFormSubmit = async () => {
         <div class="flex flex-col pt-3">
             <Select v-model="form.userType" :options="userTypes" optionLabel="type">
             </Select>
+        </div>
+        <div class="flex flex-column pt-3" v-if="form.userType.userTypeId === 2">
+            <FileUpload ref="fileupload" mode="basic" @select="onFileSelect" customUpload accept=".pdf" :maxFileSize="1000000" />
         </div>
         <div class="flex flex-col pt-3">
             <Button type="submit" severity="secondary" label="Submit" @click="onFormSubmit" />

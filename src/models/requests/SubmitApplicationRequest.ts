@@ -5,6 +5,6 @@ export class SubmitApplicaitonRequest {
     public termId!: number;
     public year!: number;
     public previousTA!: boolean;
-    // public courses!: CourseApplicationRequest[];
+    public courses!: CourseApplicationRequest[];
 }
 

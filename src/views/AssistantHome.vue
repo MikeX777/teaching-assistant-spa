@@ -23,7 +23,7 @@ import type { TermDto } from '@/models/responses/TermDto';
 import { SubmitApplicaitonRequest } from '@/models/requests/SubmitApplicationRequest';
 import { CourseApplicationRequest } from '@/models/requests/CourseApplicationRequest';
 import type { ICourseRepository } from '@/interfaces/ICourseRepository';
-import type { CourseDto } from '@/models/responses/CourseDto';
+import { CourseDto } from '@/models/responses/CourseDto';
 import type { GradeDto } from '@/models/responses/GradeDto';
 
 const router = useRouter();
@@ -49,9 +49,9 @@ courseRepository?.getGrades().then(r => {
 
 const form = reactive({
     termId: 0,
-    year: '0',
+    year: '2025',
     previousTA: false,
-    courses: [] as CourseApplicationRequest[],
+    courses: [] as any[],
 });
 
 const formErrors = reactive({
@@ -69,6 +69,12 @@ const createApplication = (event: any) => {
     request.termId = form.termId;
     request.year = parseInt(form.year);
     request.previousTA = form.previousTA;
+    request.courses = form.courses.map((dto) => ({
+        courseId: dto.selectedCourse.courseId,
+        gradeId: dto.gradeId,
+        termId: dto.termId,
+        year: dto.year,
+    }));
     applicationRepository?.submitApplicaiton(request)
         .then(r => {
             op.value.hide();
@@ -84,12 +90,10 @@ const retrieveApplications = () => {
 }
 
 const addCourse = () => {
-    const request = new CourseApplicationRequest();
-    // request.courseId = 1;
-    // request.gradeId = 1;
-    // request.year = 0;
-    // request.termId = 1;
-    form.courses.push(request);
+    const course = {
+        year: '2024',
+    }
+    form.courses.push(course);
 }
 
 const removeCourse = (course: CourseApplicationRequest) => {
@@ -138,31 +142,41 @@ retrieveApplications();
             <label for="previousTA">Previous TA</label>
             <ToggleSwitch v-model="form.previousTA" inputId="previousTA" class="ml-3" />
         </div>
-        <!-- <div class="flex flex-col pt-3">
+        <div class="flex flex-row">
             <h3>Courses</h3>
-            <Button icon="pi pi-plus" rounded @click="addCourse" />
-            <div v-for="course in form.courses" class="flex flex-row">
-                <div class="flex">
-                    <Select v-model="course.courseId" :options="courses" optionValue="courseId">
-                        <template #optiongroup="slotProps">
-                            {{  slotProps.option.prefix }}{{ slotProps.option.code }}
+            <Button icon="pi pi-plus" size="small" variant="text" rounded @click="addCourse" class="ml-2 mt-2" />
+        </div>
+        <div class="flex flex-column pt-3">
+            <div v-for="course in form.courses" class="flex flex-row pb-3">
+                <div class="flex pl-2">
+                    <Select v-model="course.selectedCourse" :options="courses" optionLabel="code" placeholder="Course">
+                        <template #value="slotProps">
+                            <div v-if="slotProps.value" class="flex items-center">
+                                {{ slotProps.value.prefix }}{{ slotProps.value.code }}
+                            </div>
+                            <div v-else>
+                                {{ slotProps.placeholder }}
+                            </div>
+                        </template>
+                        <template #option="slotProps">
+                            {{ slotProps.option.prefix }}{{ slotProps.option.code }}
                         </template>
                     </Select>
                 </div>
-                <div class="flex">
+                <div class="flex pl-2">
                     <Select v-model="course.termId" :options="terms" optionLabel="termName" optionValue="termId" placeholder="Select a Term" />
                 </div>
-                <div>
-                    <InputText v-model="course.year" type="number" placeholder="Year" " v-keyfilter.num fluid />
+                <div class="flex pl-2">
+                    <InputText v-model="course.year" type="number" placeholder="Year" v-keyfilter.num fluid />
                 </div>
-                <div class="flex">
+                <div class="flex pl-2">
                     <Select v-model="course.gradeId" :options="grades" optionLabel="grade" optionValue="gradeId" placeholder="Grade" />
                 </div>
-                <div class="flex">
-                    <Button icon="pi pi-times" rounded severity="error" @click="removeCourse(course)" />
+                <div class="flex pl-2">
+                    <Button icon="pi pi-times" rounded severity="error" variant="text" @click="removeCourse(course)" />
                 </div>
             </div>
-        </div> -->
+        </div>
         <div class="flex flex-col pt-3">
             <Button label="Create" @click="createApplication" />
         </div>
