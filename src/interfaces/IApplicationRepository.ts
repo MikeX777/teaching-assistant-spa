@@ -9,6 +9,6 @@ export interface IApplicationRepository {
     getApplicatoinStatuses(): Promise<AxiosResponse<Response<ApplicationStatusDto[]>>>
     getTerms(): Promise<AxiosResponse<Response<TermDto[]>>>
     submitApplicaiton(request: SubmitApplicaitonRequest): Promise<AxiosResponse<Response<object>>>
-    getUpcomingApplications(userId: number): Promise<AxiosResponse<Response<ApplicationDto>>>
+    getUpcomingApplications(userId: number): Promise<AxiosResponse<Response<ApplicationDto[]>>>
 
 }

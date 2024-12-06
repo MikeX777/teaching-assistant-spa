@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import { useUserStore } from '@/stores/user';
+import AssistantHome from './AssistantHome.vue';
+
+
+
+const userStore = useUserStore();
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <div v-if="userStore.user.userTypeId === 2">
+      <AssistantHome />
+    </div>
   </main>
 </template>

@@ -3,6 +3,7 @@ import type { Response } from "@/models/Response";
 import type { CreateUserRequest } from "@/models/requests/CreateUserRequest";
 import type { SignInRequest } from "@/models/requests/SignInRequest";
 import type { VerifyRequest } from "@/models/requests/VerifyRequest";
+import type { UserDto } from "@/models/responses/UserDto";
 import type { UserTypeDto } from "@/models/responses/UserTypeDto";
 import axios, { type AxiosResponse } from 'axios';
 
@@ -25,7 +26,7 @@ export class UserRepository implements IUserRepository {
         return axios.post(`${this.baseUrl}users/signin`, request);
     }
 
-    async verify(request: VerifyRequest): Promise<AxiosResponse<Response<object>>> {
-        return axios.post(`${this.baseUrl}users/veryify`, request);
+    async verify(request: VerifyRequest): Promise<AxiosResponse<Response<UserDto>>> {
+        return axios.post(`${this.baseUrl}users/verify`, request);
     }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, inject } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import axios, { type AxiosResponse } from 'axios';
 
 import type { IUserRepository } from '@/interfaces/IUserRepository';
 import { VerifyRequest } from '@/models/requests/VerifyRequest';
@@ -10,28 +11,37 @@ import { Panel } from 'primevue';
 import { InputOtp } from 'primevue';
 import { Button } from 'primevue';
 import { Message } from 'primevue';
+import { useUserStore } from '@/stores/user';
 
 const props = defineProps({
   email: String
 });
 
 const route = useRoute();
+const router = useRouter();
 const userRepository = inject<IUserRepository>('userRepository');
 const verificationCode = ref('');
 const verificationError = ref(false);
+const userStore = useUserStore();
 
 
-const onSubmit = async () => {
+const onSubmit = () => {
     const request = new VerifyRequest();
     request.verificationCode = verificationCode.value;
     request.email = decodeURIComponent(props.email ?? '');
-    const result = (await userRepository?.verify(request))?.data;
-    if (result?.success) {
-        console.log('Success');
-
-    } else {
-        verificationError.value = true;
-    }
+    userRepository?.verify(request)
+        .then(r => {
+            const result = r.data;
+            if (result?.success) {
+                userStore.setUser(result.data);
+                router.push('/');
+            } else {
+                verificationError.value = true;
+            }
+        })
+        .catch(e => {
+            verificationError.value = true;
+        });
 }
 
 </script>

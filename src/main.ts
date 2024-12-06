@@ -4,6 +4,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import ToastService from 'primevue/toastservice';
 import Ripple from 'primevue/ripple';
+import KeyFilter from 'primevue/keyfilter';
 
 import { createPinia } from 'pinia'
 
@@ -18,6 +19,7 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.directive('ripple', Ripple);
+app.directive('keyfilter', KeyFilter);
 
 app.use(createPinia())
 app.use(router)

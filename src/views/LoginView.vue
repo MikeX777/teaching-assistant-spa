@@ -5,6 +5,12 @@ import { useRouter } from 'vue-router';
 import { SignInRequest } from '@/models/requests/SignInRequest';
 import type { IUserRepository } from '@/interfaces/IUserRepository';
 
+import { Panel } from 'primevue';
+import { InputText } from 'primevue';
+import { Password } from 'primevue';
+import { Button } from 'primevue';
+import { Message } from 'primevue';
+
 const userRepository = inject<IUserRepository>('userRepository');
 const router = useRouter();
 
@@ -14,16 +20,23 @@ const form = reactive({
     password: '',
 });
 
-const onLogin = async () => {
+const onLogin = () => {
     const request = new SignInRequest();
     request.email = form.email;
     request.password = form.password;
-    const response = (await userRepository?.signIn(request))?.data;
-    if (response?.success) {
-        router.push(`/verify-email/${encodeURIComponent(form.email)}`);
-    } else {
-        formError.value = true;
-    }
+    userRepository?.signIn(request)
+        .then(r => {
+            const result = r.data;
+            if (result?.success) {
+                router.push(`/verify-email/${encodeURIComponent(form.email)}`);
+            } else {
+                console.log('I am here');
+                formError.value = true;
+            }
+        })
+        .catch(e => {
+            formError.value = true;
+        });
 }
 
 </script>
@@ -46,7 +59,7 @@ const onLogin = async () => {
                 </Message>
             </div>
             <div class="flex flex-col pt-3">
-                <Button type="submit" severity="secondary" label="Submit" @click="onLogin" />
+                <Button severity="secondary" label="Submit" @click="onLogin" />
             </div>
         </Panel>
     </main>

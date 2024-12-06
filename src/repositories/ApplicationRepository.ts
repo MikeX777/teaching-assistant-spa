@@ -25,7 +25,7 @@ export class ApplicationRepository implements IApplicationRepository {
         return axios.post(`${this.baseUrl}applications/submit`, request)
     }
 
-    async getUpcomingApplications(userId: number): Promise<AxiosResponse<Response<ApplicationDto>>> {
+    async getUpcomingApplications(userId: number): Promise<AxiosResponse<Response<ApplicationDto[]>>> {
         return axios.get(`${this.baseUrl}/applications/users/${userId}/upcoming`);
     }
 }

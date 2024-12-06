@@ -33,7 +33,8 @@ const router = createRouter({
     {
       path: '/verify-email/:email',
       name: 'Verify Email',
-      component: VerifyEmailView
+      component: VerifyEmailView,
+      props: true,
     }
   ],
 })
