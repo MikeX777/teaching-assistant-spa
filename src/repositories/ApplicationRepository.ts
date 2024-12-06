@@ -22,7 +22,7 @@ export class ApplicationRepository implements IApplicationRepository {
     }
 
     async submitApplicaiton(request: SubmitApplicaitonRequest): Promise<AxiosResponse<Response<object>>> {
-        return axios.post(`${this.baseUrl}applications/submit`, request)
+        return axios.post(`${this.baseUrl}applications/submit-with-courses`, request)
     }
 
     async getUpcomingApplications(userId: number): Promise<AxiosResponse<Response<ApplicationDto[]>>> {

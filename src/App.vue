@@ -6,22 +6,20 @@ import type { IUserRepository } from './interfaces/IUserRepository';
 import { UserRepository } from './repositories/UserRepository';
 import type { IApplicationRepository } from './interfaces/IApplicationRepository';
 import { ApplicationRepository } from './repositories/ApplicationRepository';
+import type { ICourseRepository } from './interfaces/ICourseRepository';
+import { CoureRepository } from './repositories/CourseRepository';
 
 import Menubar from 'primevue/menubar';
 
 provide<IUserRepository>('userRepository', new UserRepository('https://apitaassistant-app-2024102921080.nicecliff-6fd000a2.eastus2.azurecontainerapps.io/v1/'));
 provide<IApplicationRepository>('applicationRepository', new ApplicationRepository('https://apitaassistant-app-2024102921080.nicecliff-6fd000a2.eastus2.azurecontainerapps.io/v1/'));
+provide<ICourseRepository>('courseRepository', new CoureRepository('https://apitaassistant-app-2024102921080.nicecliff-6fd000a2.eastus2.azurecontainerapps.io/v1/'));
 
 const items = ref([
   {
     label: 'Home',
     icon: 'pi pi-home',
     route: '/',
-  },
-  {
-    label: 'Features',
-    icon: 'pi pi-star',
-    route: '/about',
   },
   {
     label: 'Create Account',

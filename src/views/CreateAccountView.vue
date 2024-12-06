@@ -25,6 +25,7 @@ const router = useRouter();
 const form = reactive({
     givenName: '',
     familyName: '',
+    phoneNumber: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -34,6 +35,7 @@ const form = reactive({
 const formErrors = reactive({
     givenName: [] as string[],
     familyName: [] as string[],
+    phoneNumber: [] as string[],
     email: [] as string[],
     password: [] as string[],
     confirmPassword: [] as string[],
@@ -51,6 +53,9 @@ const confirmPasswordMatches = (value: string) => {
 const formSchema = z.object({
     givenName: z.string().min(1, { message: 'Given Name is required.' }),
     familyName: z.string().min(1, { message: 'Family Name is required.' }),
+    // phone: z.string().min(5, { message: 'Phone is requried.'}).regex(new RegExp(
+//   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
+// ), {message: 'Invalid phone number'}),
     email: z.string().min(1, { message: 'Email is required.' }).email('Value must be a valid email.'),
     password: z.string().min(1, { message: 'Password is required.'}),
     confirmPassword: z.custom<{ arg: string }>(confirmPasswordMatches, 'Confirm Password must match password.'),
@@ -59,10 +64,12 @@ const formSchema = z.object({
 
 
 const onFormSubmit = async () => {
+    console.log('test testx ')
     const result = formSchema.safeParse(form);
     if (!result.success) {
         formErrors.givenName = result.error.errors.filter(e => e.path.toString() === 'givenName').map(e => e.message);
         formErrors.familyName = result.error.errors.filter(e => e.path.toString() === 'familyName').map(e => e.message);
+        formErrors.phoneNumber = result.error.errors.filter(e => e.path.toString() === 'phoneNumber').map(e => e.message);
         formErrors.email = result.error.errors.filter(e => e.path.toString() === 'email').map(e => e.message);
         formErrors.password = result.error.errors.filter(e => e.path.toString() === 'password').map(e => e.message);
         formErrors.confirmPassword = result.error.errors.filter(e => e.path.toString() === 'confirmPassword').map(e => e.message);
@@ -70,6 +77,7 @@ const onFormSubmit = async () => {
         const request = new CreateUserRequest();
         request.givenName = form.givenName;
         request.familyName = form.familyName;
+        request.phoneNumber = form.phoneNumber;
         request.email = form.email;
         request.password = form.password;
         request.userTypeId = form.userType.userTypeId;
@@ -95,6 +103,12 @@ const onFormSubmit = async () => {
             <InputText v-model="form.familyName" type="text" placeholder="Family Name" :invalid="formErrors.familyName.length > 0" fluid />
             <Message v-if="formErrors.familyName.length > 0" severity="error" size="small" variant="simple">
                 {{ formErrors.familyName[0] }}
+            </Message>
+        </div>
+        <div class="flex flex-col  pt-3">
+            <InputText v-model="form.phoneNumber" type="text" placeholder="Phone Number" :invalid="formErrors.phoneNumber.length > 0" fluid />
+            <Message v-if="formErrors.phoneNumber.length > 0" severity="error" size="small" variant="simple">
+                {{ formErrors.phoneNumber[0] }}
             </Message>
         </div>
         <div class="flex flex-col pt-3">
