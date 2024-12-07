@@ -34,6 +34,8 @@ const form = reactive({
     userType: { userTypeId: 2, type: 'Teaching Assistant'},
 });
 
+const submitError = ref('');
+
 const formErrors = reactive({
     givenName: [] as string[],
     familyName: [] as string[],
@@ -89,6 +91,8 @@ const onFormSubmit = async () => {
             }).catch(e => {
                 console.log(e);
             });
+        }).catch(e => {
+            submitError.value = e?.response?.data?.data?.errors[0]?.message ?? 'Error Creating User';
         });
     }
 };
@@ -146,6 +150,11 @@ function onFileSelect(event: any) {
         </div>
         <div class="flex flex-column pt-3" v-if="form.userType.userTypeId === 2">
             <FileUpload ref="fileupload" mode="basic" @select="onFileSelect" customUpload accept=".pdf" :maxFileSize="1000000" />
+        </div>
+        <div class="flex pt-3" v-if="submitError">
+            <Message severity="error" size="small" variant="simple">
+                {{ submitError }}
+            </Message>
         </div>
         <div class="flex flex-col pt-3">
             <Button type="submit" severity="secondary" label="Submit" @click="onFormSubmit" />
